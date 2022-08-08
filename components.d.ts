@@ -16,5 +16,7 @@ declare module '@vue/runtime-core' {
     PongBall: typeof import('./src/components/PongBall.vue')['default']
     PongBoard: typeof import('./src/components/PongBoard.vue')['default']
     PongBullet: typeof import('./src/components/PongBullet.vue')['default']
+    PongRank: typeof import('./src/components/PongRank.vue')['default']
+    PongStatus: typeof import('./src/components/PongStatus.vue')['default']
   }
 }

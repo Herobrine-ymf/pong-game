@@ -22,6 +22,9 @@ export default defineConfig({
           ],
         },
       ],
+      dirs: [
+        "./src/composables/**", // all nested modules
+      ],
       resolvers: [ElementPlusResolver()],
     }),
     Components({
