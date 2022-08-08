@@ -175,7 +175,7 @@ const click = () => {
 let rank = $ref([{ point: 0 }]);
 const name = $ref("");
 let clickable = $ref(true);
-const gsetRank = (set?: boolean) => {
+const gsetRank = (set = true) => {
   if (set) {
     const _tmp = { name: name ? name : "匿名", point: displayPoint };
     axios.get("/.netlify/functions/rank", {
@@ -210,7 +210,7 @@ gsetRank(false);
       <el-input v-model="name" placeholder="用户名: " />
       <el-button
         type="primary"
-        @click="gsetRank"
+        @click="gsetRank()"
         :disabled="!(clickable && displayPoint >= 20)"
       >
         提交
