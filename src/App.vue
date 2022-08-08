@@ -105,7 +105,7 @@ const start = () => {
       if (boardX <= ballX + ballDiameter && boardX + boardWidth >= ballX) {
         point += 1;
         if (rateY > 0) {
-          rateY *= -1;
+          rateY *= -(Math.random() * 0.375 + 0.875); // 0.875 ~ 1.25
         }
         if (
           ballY + ballDiameter >
@@ -172,18 +172,16 @@ const click = () => {
   }
 };
 
-let rank = $ref([]);
+let rank = $ref([{ point: 0 }]);
 const name = $ref("");
 let clickable = $ref(true);
 const gsetRank = (set = true) => {
   if (set) {
-    axios
-      .get("/.netlify/functions/rank", {
-        params: { name: name ? name : "匿名", point: displayPoint },
-      })
-      .then((res) => {
-        rank = res.data;
-      });
+    const _tmp = { name: name ? name : "匿名", point: displayPoint };
+    axios.get("/.netlify/functions/rank", {
+      params: _tmp,
+    });
+    rank.push(_tmp);
     clickable = false;
   } else {
     axios.get("/.netlify/functions/rank").then((res) => {
@@ -213,7 +211,7 @@ gsetRank(false);
       <el-button
         type="primary"
         @click="gsetRank"
-        :disabled="!(clickable && point >= 20)"
+        :disabled="!(clickable && displayPoint >= 20)"
       >
         提交
       </el-button>

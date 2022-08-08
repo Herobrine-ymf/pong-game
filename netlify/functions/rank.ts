@@ -13,17 +13,21 @@ async function insert(name: string, point: number) {
   collection.insertOne({ name: name, point: point });
 }
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   const name = event.queryStringParameters["name"] as string;
   const point = parseInt(event.queryStringParameters["point"] as string);
 
   if (point >= 20) {
     insert(name, point);
+    return {
+      statusCode: 200,
+    };
+  } else {
+    return {
+      statusCode: 200,
+      body: JSON.stringify(await get()),
+    };
   }
-  return {
-    statusCode: 200,
-    body: JSON.stringify(await get()),
-  };
 };
 
 export { handler };
