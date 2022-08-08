@@ -13,7 +13,15 @@ export default defineConfig({
       reactivityTransform: true,
     }),
     AutoImport({
-      imports: ["vue"],
+      imports: [
+        "vue",
+        {
+          axios: [
+            // default imports
+            ["default", "axios"], // import { default as axios } from 'axios',
+          ],
+        },
+      ],
       resolvers: [ElementPlusResolver()],
     }),
     Components({

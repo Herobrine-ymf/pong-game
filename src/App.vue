@@ -18,6 +18,9 @@ const difficulty = $ref(5);
 let difficultyLock = $ref(difficulty);
 let point = $ref(0);
 let fail = $ref(false);
+const displayPoint = $computed(() => {
+  return Math.floor((point * difficultyLock) / 5);
+});
 
 let ballX = $ref(0);
 let ballY = $ref(0);
@@ -112,6 +115,7 @@ const start = () => {
         }
       } else if (ballY + ballDiameter > innerHeightLock - 10) {
         fail = true;
+        clickable = true;
         clearInterval(timerID);
       }
     }
@@ -167,6 +171,27 @@ const click = () => {
     }, 1000);
   }
 };
+
+let rank = $ref([]);
+const name = $ref("");
+let clickable = $ref(true);
+const gsetRank = (set = true) => {
+  if (set) {
+    axios
+      .get("/.netlify/functions/rank", {
+        params: { name: name ? name : "匿名", point: displayPoint },
+      })
+      .then((res) => {
+        rank = res.data;
+      });
+    clickable = false;
+  } else {
+    axios.get("/.netlify/functions/rank").then((res) => {
+      rank = res.data;
+    });
+  }
+};
+gsetRank(false);
 </script>
 
 <template>
@@ -179,8 +204,34 @@ const click = () => {
         </el-button>
       </div>
       <el-tag :type="config.cheat ? 'danger' : 'success'" size="large">
-        <h2>{{ Math.floor((point * difficultyLock) / 5) }} 分</h2>
+        <h2>{{ displayPoint }} 分</h2>
       </el-tag>
+    </div>
+
+    <div v-if="fail">
+      <el-input v-model="name" placeholder="用户名: " />
+      <el-button
+        type="primary"
+        @click="gsetRank"
+        :disabled="!(clickable && point >= 20)"
+      >
+        提交
+      </el-button>
+
+      <el-table
+        :data="
+          rank
+            .sort((a, b) => {
+              return b['point'] - a['point'];
+            })
+            .slice(0, 10)
+        "
+        table-layout="auto"
+      >
+        <el-table-column type="index" />
+        <el-table-column prop="name" label="用户名" />
+        <el-table-column prop="point" label="分数" />
+      </el-table>
     </div>
 
     <PongBall :diameter="ballDiameter" :offset-x="ballX" :offset-y="ballY" />
