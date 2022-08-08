@@ -175,7 +175,7 @@ const click = () => {
 let rank = $ref([{ point: 0 }]);
 const name = $ref("");
 let clickable = $ref(true);
-const gsetRank = (set = true) => {
+const gsetRank = (set?: boolean) => {
   if (set) {
     const _tmp = { name: name ? name : "匿名", point: displayPoint };
     axios.get("/.netlify/functions/rank", {
