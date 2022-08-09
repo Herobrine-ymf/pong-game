@@ -6,6 +6,17 @@ export default {
   boardHeight: 20,
   boardBottom: 40,
 
+  multiple: {
+    diameter: 50,
+    ballSpeed: 4,
+    boardSpeed: 256,
+    boardWidth: 25,
+    boardHeight: 256,
+    boardInterval: 40,
+
+    timeOut: 500,
+  },
+
   antiCheat: false,
 
   url: "/.netlify/functions/rank",

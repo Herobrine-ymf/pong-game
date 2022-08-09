@@ -16,15 +16,10 @@ export default defineConfig({
       imports: [
         "vue",
         {
-          axios: [
-            // default imports
-            ["default", "axios"], // import { default as axios } from 'axios',
-          ],
+          axios: [["default", "axios"]],
         },
       ],
-      dirs: [
-        "./src/composables/**", // all nested modules
-      ],
+      dirs: ["./src/composables/**"],
       resolvers: [ElementPlusResolver()],
     }),
     Components({
