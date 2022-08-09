@@ -8,6 +8,7 @@ export default {
 
   antiCheat: false,
 
+  url: "/.netlify/functions/rank",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json;charset=UTF-8",

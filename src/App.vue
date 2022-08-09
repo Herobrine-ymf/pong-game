@@ -10,11 +10,11 @@ onUnmounted(() => {
   clearInterval(timerID);
 });
 
-let ballDiameter = $ref(0);
-let bulletDiameter = $ref(0);
-let boardWidth = $ref(0);
-let boardHeight = $ref(0);
-let boardBottom = $ref(0);
+let ballDiameter = $ref(0),
+  bulletDiameter = $ref(0),
+  boardWidth = $ref(0),
+  boardHeight = $ref(0),
+  boardBottom = $ref(0);
 if (!config.antiCheat)
   ({ ballDiameter, bulletDiameter, boardWidth, boardHeight, boardBottom } =
     getSize());
@@ -22,20 +22,17 @@ if (!config.antiCheat)
 const difficulty = $ref(config.difficulty);
 let difficultyLock = $ref(0);
 
-let point = $ref(0);
-const displayPoint = $computed(() => {
-  return Math.floor((point * difficultyLock) / 5);
-});
+let point = $ref(0),
+  fail = $ref(false);
+const displayPoint = $computed(() => Math.floor((point * difficultyLock) / 5));
 
-let fail = $ref(false);
+let ballX = $ref(0),
+  ballY = $ref(0),
+  boardX = $ref(0),
+  bulletX = $ref(0),
+  bulletY = $ref(0);
 
-let ballX = $ref(0);
-let ballY = $ref(0);
-let boardX = $ref(0);
-let bulletX = $ref(0);
-let bulletY = $ref(0);
-
-let timerID: ReturnType<typeof setInterval> | number = 0;
+let timerID: NodeJS.Timer;
 
 const start = () => {
   if (difficulty) difficultyLock = difficulty;
@@ -123,8 +120,9 @@ const mousemove = (event: MouseEvent) => {
   }
 };
 
-let bulletExist = false;
-let coolDown = true;
+let bulletExist = false,
+  coolDown = true;
+
 const click = () => {
   if (!bulletExist) {
     bulletExist = true;
@@ -139,14 +137,16 @@ const click = () => {
 </script>
 
 <template>
-  <div class="container" onselectstart="return false">
+  <div class="page" onselectstart="return false">
     <PongStatus
       :start="start"
       :fail="fail"
       :point="displayPoint"
       @difficulty="(a :number) => difficulty = a"
     />
-    <PongRank :fail="fail" :point="displayPoint" />
+    <Suspense>
+      <PongRank :fail="fail" :point="displayPoint" />
+    </Suspense>
 
     <PongBall :diameter="ballDiameter" :offset-x="ballX" :offset-y="ballY" />
     <PongBoard
@@ -164,7 +164,7 @@ const click = () => {
 </template>
 
 <style scoped>
-.container {
+.page {
   position: absolute;
   width: 100%;
   height: 100%;

@@ -11,5 +11,6 @@ module.exports = {
   ],
   rules: {
     "no-undef": 0,
+    "vue/no-setup-props-destructure": 0,
   },
 };

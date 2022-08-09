@@ -6,17 +6,17 @@ interface Props {
 }
 defineProps<Props>();
 
-const difficulty = $ref(config.difficulty);
+const difficulty = $ref(config.difficulty),
+  emit = defineEmits(["difficulty"]);
 
-const emit = defineEmits(["difficulty"]);
-watch(difficulty, () => {
+watch($$(difficulty), () => {
   emit("difficulty", difficulty);
 });
 </script>
 
 <template>
   <el-input-number v-model="difficulty" :min="1" :max="30" />
-  <div @click.stop="start">
+  <div @click.stop="start()">
     <el-button v-if="fail" type="danger" style="font-size: 12px">
       <h1>Game Over</h1>
     </el-button>
