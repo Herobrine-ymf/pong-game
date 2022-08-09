@@ -15,13 +15,12 @@ let bulletDiameter = $ref(0);
 let boardWidth = $ref(0);
 let boardHeight = $ref(0);
 let boardBottom = $ref(0);
-if (!config.antiCheat) {
+if (!config.antiCheat)
   ({ ballDiameter, bulletDiameter, boardWidth, boardHeight, boardBottom } =
     getSize());
-}
 
 const difficulty = $ref(config.difficulty);
-let difficultyLock = $ref(config.difficulty);
+let difficultyLock = $ref(0);
 
 let point = $ref(0);
 const displayPoint = $computed(() => {
@@ -39,9 +38,7 @@ let bulletY = $ref(0);
 let timerID: ReturnType<typeof setInterval> | number = 0;
 
 const start = () => {
-  if (difficulty !== null) {
-    difficultyLock = difficulty;
-  }
+  if (difficulty) difficultyLock = difficulty;
 
   point = 0;
   fail = false;
@@ -67,15 +64,9 @@ const start = () => {
       oldHeight = innerHeight;
     }
 
-    if (ballX + rateX >= innerWidth - ballDiameter) {
-      rateX *= -1;
-    }
-    if (ballX + rateX <= 0) {
-      rateX *= -1;
-    }
-    if (ballY + rateY <= 0) {
-      rateY *= -1;
-    }
+    if (ballX + rateX >= innerWidth - ballDiameter) rateX *= -1;
+    if (ballX + rateX <= 0) rateX *= -1;
+    if (ballY + rateY <= 0) rateY *= -1;
 
     ballX += rateX;
     ballY += rateY;
@@ -111,22 +102,22 @@ const start = () => {
   }, 2);
 };
 
-const mousemove = (e: MouseEvent) => {
-  if (e.clientX + boardWidth / 2 > innerWidth) {
+const mousemove = (event: MouseEvent) => {
+  if (event.clientX + boardWidth / 2 > innerWidth) {
     boardX = innerWidth - boardWidth;
-  } else if (e.clientX - boardWidth / 2 < 0) {
+  } else if (event.clientX - boardWidth / 2 < 0) {
     boardX = 0;
   } else {
-    boardX = e.clientX - boardWidth / 2;
+    boardX = event.clientX - boardWidth / 2;
   }
 
   if (!bulletExist) {
-    if (e.clientX + bulletDiameter / 2 > innerWidth) {
+    if (event.clientX + bulletDiameter / 2 > innerWidth) {
       bulletX = innerWidth - bulletDiameter;
-    } else if (e.clientX - bulletDiameter / 2 < 0) {
+    } else if (event.clientX - bulletDiameter / 2 < 0) {
       bulletX = 0;
     } else {
-      bulletX = e.clientX - bulletDiameter / 2;
+      bulletX = event.clientX - bulletDiameter / 2;
     }
     bulletY = innerHeight - boardBottom - boardHeight - bulletDiameter;
   }
@@ -152,10 +143,10 @@ const click = () => {
     <PongStatus
       :start="start"
       :fail="fail"
-      :display-point="displayPoint"
-      @difficulty="(msg :number) => (difficulty = msg)"
+      :point="displayPoint"
+      @difficulty="(a :number) => difficulty = a"
     />
-    <PongRank :fail="fail" :display-point="displayPoint" />
+    <PongRank :fail="fail" :point="displayPoint" />
 
     <PongBall :diameter="ballDiameter" :offset-x="ballX" :offset-y="ballY" />
     <PongBoard

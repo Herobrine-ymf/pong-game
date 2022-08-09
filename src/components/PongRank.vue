@@ -1,38 +1,35 @@
 <script setup lang="ts">
 interface Props {
   fail: boolean;
-  displayPoint: number;
+  point: number;
 }
 const props = defineProps<Props>();
 
-let rank = $ref([{ name: "正在加载...", point: 0 }]);
-
-let clickable = $ref(true);
+let disable = $ref(false);
 watch(
   () => props.fail,
-  (newValue) => {
-    if (newValue) {
-      clickable = true;
+  () => {
+    if (props.fail) {
+      disable = false;
     }
   }
 );
 
+let rank = $ref([{ name: "正在加载...", point: 0 }]);
+const url = "/.netlify/functions/rank";
 const name = $ref("");
-const gsetRank = (set = true) => {
-  if (set) {
-    const _tmp = { name: name ? name : "匿名", point: props.displayPoint };
-    axios.get("/.netlify/functions/rank", {
-      params: _tmp,
-    });
-    rank.push(_tmp);
-    clickable = false;
-  } else {
-    axios.get("/.netlify/functions/rank").then((res) => {
-      rank = res.data;
-    });
-  }
+
+axios.post(url, { headers: config.headers }).then(({ data }) => {
+  rank = data;
+});
+
+const setRank = () => {
+  const data = { name: name ? name : "匿名", point: props.point };
+  axios.post(url, data, { headers: config.headers });
+  rank.push(data);
+
+  disable = true;
 };
-gsetRank(false);
 </script>
 
 <template>
@@ -40,8 +37,8 @@ gsetRank(false);
     <el-input v-model="name" placeholder="用户名: " />
     <el-button
       type="primary"
-      @click="gsetRank()"
-      :disabled="!(clickable && displayPoint >= 20)"
+      @click="setRank()"
+      :disabled="disable || !(point >= 20)"
     >
       提交
     </el-button>

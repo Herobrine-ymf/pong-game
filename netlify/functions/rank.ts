@@ -6,28 +6,19 @@ const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 const collection = client.db("main").collection("rank");
 client.connect();
 
-function get() {
-  return collection.find({}).toArray();
-}
-async function insert(name: string, point: number) {
-  collection.insertOne({ name: name, point: point });
-}
-
 const handler: Handler = async (event) => {
   const name = event.queryStringParameters["name"] as string;
   const point = parseInt(event.queryStringParameters["point"] as string);
 
   if (point >= 20) {
-    insert(name, point);
-    return {
-      statusCode: 200,
-    };
-  } else {
-    return {
-      statusCode: 200,
-      body: JSON.stringify(await get()),
-    };
+    (async () => collection.insertOne({ name: name, point: point }))();
+    return { statusCode: 200 };
   }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(await collection.find({}).toArray()),
+  };
 };
 
 export { handler };
