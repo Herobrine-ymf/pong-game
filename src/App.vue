@@ -47,11 +47,10 @@ const start = () => {
   ballY = 0;
 
   let rateX =
-    (difficultyLock / Math.tan((Math.random() * 40 + 30) * (Math.PI / 180))) *
-    (Math.random() > 0.5 ? 1 : -1);
-  let rateY = difficultyLock;
-
-  let oldHeight: number;
+      (difficultyLock / Math.tan((Math.random() * 40 + 30) * (Math.PI / 180))) *
+      (Math.random() > 0.5 ? 1 : -1),
+    rateY = difficultyLock,
+    oldHeight: number;
 
   clearInterval(timerID);
   timerID = setInterval(() => {
