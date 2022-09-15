@@ -3,7 +3,6 @@ export {}
 declare global {
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const createPinia: typeof import('pinia')['createPinia']
-  const darkTheme: typeof import('naive-ui')['darkTheme']
   const defineStore: typeof import('pinia')['defineStore']
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const mapActions: typeof import('pinia')['mapActions']

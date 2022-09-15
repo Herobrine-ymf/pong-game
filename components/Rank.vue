@@ -11,11 +11,11 @@ interface rank {
   score: number
 }
 
-let ranks = $(
+let ranks = $ref(
   useFetch<{ data: rank[]; me?: rank }>(config.rankAPI, {
     params: { id },
     credentials: 'omit',
-  }).data,
+  }).data.value!,
 )
 
 onBeforeMount(() => {

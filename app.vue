@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { darkTheme, lightTheme } from 'naive-ui'
+
 useHead({
   title: 'Pong Game',
   link: [
@@ -8,14 +10,13 @@ useHead({
   ],
 })
 
-const theme = darkTheme
+const color = useColorMode()
+const theme = color.value === 'dark' ? darkTheme : lightTheme
 </script>
 
 <template>
   <n-config-provider :theme="theme">
-    <n-message-provider>
-      <NuxtPage />
-    </n-message-provider>
+    <NuxtPage />
   </n-config-provider>
 </template>
 
@@ -25,7 +26,6 @@ html, body , #__nuxt{
   margin: 0;
   padding: 0;
 }
-
 html.dark {
   background: #222;
   color: white;

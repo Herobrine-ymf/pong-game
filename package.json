@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@7.9.5",
+  "packageManager": "pnpm@7.13.2",
   "scripts": {
     "build": "nuxi build",
     "dev": "nuxi dev",
@@ -10,22 +10,20 @@
     "generate": "nuxi generate"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.26.3",
-    "@iconify-json/carbon": "^1.1.7",
+    "@antfu/eslint-config": "^0.27.0",
+    "@iconify-json/carbon": "^1.1.8",
     "@iconify-json/twemoji": "^1.1.5",
-    "@nuxtjs/color-mode": "^3.1.5",
+    "@nuxtjs/color-mode": "^3.1.7",
     "@pinia/nuxt": "^0.4.2",
-    "@unocss/nuxt": "^0.45.18",
-    "@vueuse/nuxt": "^9.2.0",
-    "eslint": "^8.23.0",
-    "mongodb": "^4.9.1",
-    "naive-ui": "^2.33.2",
-    "nuxt": "3.0.0-rc.9",
-    "pg": "^8.8.0",
-    "pg-hstore": "^2.3.4",
+    "@unocss/nuxt": "^0.45.26",
+    "@vueuse/nuxt": "^9.3.0",
+    "eslint": "^8.24.0",
+    "mongodb": "^4.10.0",
+    "naive-ui": "^2.33.4",
+    "nuxt": "3.0.0-rc.11",
     "pinia": "^2.0.22",
-    "typescript": "^4.8.3",
+    "typescript": "^4.8.4",
     "unplugin-auto-import": "^0.11.2",
-    "unplugin-vue-components": "^0.22.4"
+    "unplugin-vue-components": "^0.22.8"
   }
 }
