@@ -5,14 +5,20 @@ import AutoImport from 'unplugin-auto-import/vite'
 export default defineNuxtConfig({
   build: {
     transpile:
-    process.env.NODE_ENV === 'production'
-      ? [
-          'naive-ui',
-          'vueuc',
-          '@css-render/vue3-ssr',
-          '@juggle/resize-observer',
-        ]
-      : ['@juggle/resize-observer'],
+      process.env.NODE_ENV === 'production'
+        ? [
+            'naive-ui',
+            'vueuc',
+            '@css-render/vue3-ssr',
+            '@juggle/resize-observer',
+          ]
+        : ['@juggle/resize-observer'],
+  },
+  colorMode: {
+    classSuffix: '',
+  },
+  experimental: {
+    reactivityTransform: true,
   },
   modules: [
     '@vueuse/nuxt',
@@ -20,11 +26,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
   ],
-  experimental: {
-    reactivityTransform: true,
-  },
-  colorMode: {
-    classSuffix: '',
+  runtimeConfig: {
+    mongodbUri: '',
   },
   vite: {
     plugins: [AutoImport({
