@@ -7,21 +7,4 @@
     "*.css": "postcss"
   },
   "editor.formatOnSave": false,
-  "cSpell.words": [
-    "antfu",
-    "demi",
-    "iconify",
-    "intlify",
-    "nuxi",
-    "nuxt",
-    "nuxtjs",
-    "pinia",
-    "pnpm",
-    "unocss",
-    "unplugin",
-    "Vite",
-    "vitejs",
-    "Vitesse",
-    "vueuse"
-  ]
 }

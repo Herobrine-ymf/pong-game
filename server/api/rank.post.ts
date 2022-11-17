@@ -1,17 +1,13 @@
 import { ObjectId } from 'mongodb'
-import config from '@/composables/config'
 import { rank } from '@/db'
 
 export default defineEventHandler(async (event) => {
-  const body = await useBody(event)
+  const body = await readBody(event)
+  const name = String(body.name)
   const score = Number(body.score)
 
-  if (body.id) {
+  if (body.id)
     rank.updateOne({ _id: new ObjectId(body.id) }, { $set: { score } })
-
-    return { status: 'ok' }
-  }
-  else if (score >= config.scoreLowLimit) {
-    return (await rank.insertOne({ name: String(body.name), score })).insertedId
-  }
+  else
+    return (await rank.insertOne({ name, score })).insertedId
 })
