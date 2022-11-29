@@ -4,8 +4,8 @@ const statusStore = useStatusStore()
 
 onMounted(() => {
   addEventListener('touchmove', handleTouchmove)
-  if (!config.antiCheat)
-    elementStore.newSize()
+  addEventListener('resize', elementStore.newSize)
+  elementStore.newSize()
   start()
 })
 onUnmounted(() => {
@@ -15,7 +15,7 @@ onUnmounted(() => {
 
 const { ball, board, bullet } = $(elementStore)
 const { difficultyLock } = $(statusStore)
-let { score, fail } = $(statusStore)
+let { fail } = $(statusStore)
 
 let timerID: NodeJS.Timer
 let bulletExist = false
@@ -26,7 +26,7 @@ function start() {
   addEventListener('click', handleClick)
 
   statusStore.lockDifficulty()
-  score = 0
+  statusStore.resetScore()
   fail = false
 
   bulletExist = false
@@ -42,9 +42,6 @@ function start() {
 
   clearInterval(timerID)
   timerID = setInterval(() => {
-    if (config.antiCheat)
-      elementStore.newSize()
-
     if (bulletExist) {
       bullet.y -= 10
       if (
@@ -56,7 +53,7 @@ function start() {
       ) {
         coolDown = false
         rateY = Math.abs(rateY) * -1
-        score += 3
+        statusStore.incrementScore(3)
       }
     }
 
@@ -73,7 +70,7 @@ function start() {
         board.x <= ball.x + ball.diameter
         && board.x + board.width >= ball.x
       ) {
-        score++
+        statusStore.incrementScore(1)
         if (rateY > 0) {
           rateY *= -1
           rateX *= 1.0625
@@ -94,7 +91,7 @@ function stop() {
   clearInterval(timerID)
 }
 
-function setPosition(target: number, size: number) {
+function getPosition(target: number, size: number) {
   if (target + size / 2 > innerWidth)
     return innerWidth - size
   else if (target - size / 2 < 0)
@@ -103,21 +100,18 @@ function setPosition(target: number, size: number) {
 }
 
 function handleMousemove(event: MouseEvent) {
-  event.preventDefault()
   const { clientX } = event
 
-  board.x = setPosition(clientX, board.width)
-
+  board.x = getPosition(clientX, board.width)
   if (!bulletExist) {
-    bullet.x = setPosition(clientX, bullet.diameter)
+    bullet.x = getPosition(clientX, bullet.diameter)
     bullet.y = innerHeight - board.bottom - board.height - bullet.diameter
   }
 }
 
 function handleTouchmove(event: TouchEvent) {
   event.preventDefault()
-
-  board.x = setPosition(event.changedTouches[0].clientX, board.width)
+  board.x = getPosition(event.changedTouches[0].clientX, board.width)
   handleClick()
 }
 

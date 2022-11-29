@@ -1,8 +1,4 @@
 export default {
-  antiCheat: true,
-  scoreLowLimit: 20,
-  difficulty: 5,
-
   ball: {
     diameter: 60,
   },
@@ -15,6 +11,8 @@ export default {
     diameter: 20,
   },
 
+  difficulty: 5,
   rankAPI: '/api/rank',
   rankLimit: 20,
+  scoreLowLimit: 20,
 }

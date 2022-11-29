@@ -12,13 +12,23 @@ export const useStatusStore = defineStore('status', () => {
     difficultyLock.value = difficulty.value
   }
 
+  function incrementScore(add: number) {
+    score.value += add
+  }
+
+  function resetScore() {
+    score.value = 0
+  }
+
   return {
     difficulty,
     difficultyLock,
     score,
     fail,
     displayScore,
+    incrementScore,
     lockDifficulty,
+    resetScore,
   }
 })
 

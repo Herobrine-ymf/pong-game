@@ -13,7 +13,7 @@ watch($$(fail), () => (disable = !fail))
 
 async function handleClick() {
   disable = true
-  name = (name || '匿名').trim()
+  name = name!.trim() || '匿名'
 
   if (name!.startsWith(':id')) {
     let tmp
@@ -47,8 +47,7 @@ async function handleClick() {
     <br>
     <n-space justify="center">
       <n-button
-        v-show="Boolean(id)"
-        type="error"
+        v-show="Boolean(id)" type="error"
         @click="() => {
           name = ''
           id = ''
@@ -57,24 +56,17 @@ async function handleClick() {
         清除
       </n-button>
       <n-input
-        v-model:value="name"
-        class="min-w-[100px]"
-        autosize
-        placeholder="用户名: "
-        :disabled="Boolean(id)"
+        v-model:value="name" class="min-w-[100px]" autosize placeholder="用户名: " :disabled="Boolean(id)"
         :maxlength="30"
       />
-      <n-button
-        :disabled="disable || score < config.scoreLowLimit"
-        @click="handleClick()"
-      >
+      <n-button :disabled="disable || score < config.scoreLowLimit" @click="handleClick()">
         提交
       </n-button>
     </n-space>
     <br>
 
     <n-data-table
-      :data="ranks.map((item, index) => ({ index: index + 1, ...item }))"
+      :data="ranks.map((item, index) => ({ index: index + 1, ...item }))" :pagination="{}"
       :columns="[
         {
           key: 'index',
@@ -88,7 +80,6 @@ async function handleClick() {
           key: 'score',
         },
       ]"
-      :pagination="{}"
     />
   </n-collapse-transition>
 </template>
