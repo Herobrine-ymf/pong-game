@@ -25,6 +25,7 @@ html, body , #__nuxt{
   height: 100vh;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 html.dark {
   background: #222;

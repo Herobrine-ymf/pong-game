@@ -2,15 +2,8 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 
 export const useStatusStore = defineStore('status', () => {
   const difficulty = ref(config.difficulty)
-  const difficultyLock = ref(0)
   const score = ref(0)
   const fail = ref(false)
-
-  const displayScore = computed(() => Math.floor((score.value * difficultyLock.value) / 5))
-
-  function lockDifficulty() {
-    difficultyLock.value = difficulty.value
-  }
 
   function incrementScore(add: number) {
     score.value += add
@@ -22,12 +15,9 @@ export const useStatusStore = defineStore('status', () => {
 
   return {
     difficulty,
-    difficultyLock,
     score,
     fail,
-    displayScore,
     incrementScore,
-    lockDifficulty,
     resetScore,
   }
 })

@@ -1,47 +1,55 @@
 <script setup lang="ts">
-const elementStore = useElementStore()
-const statusStore = useStatusStore()
-
 onMounted(() => {
-  addEventListener('touchmove', handleTouchmove)
-  addEventListener('resize', elementStore.newSize)
-  elementStore.newSize()
   start()
 })
-onUnmounted(() => {
-  removeEventListener('touchmove', handleTouchmove)
-  stop()
+
+const statusStore = useStatusStore()
+const { width, height } = $(useWindowSize())
+const { x: mouseX, sourceType: mouseType } = $(useMouse())
+const { pressed } = $(useMousePressed())
+
+const ball = reactive({
+  x: 0,
+  y: 0,
+  diameter: 0,
+})
+const board = reactive({
+  x: 0,
+  width: 0,
+  height: 0,
+  bottom: 0,
+})
+const bullet = reactive({
+  x: 0,
+  y: 0,
+  diameter: 0,
 })
 
-const { ball, board, bullet } = $(elementStore)
-const { difficultyLock } = $(statusStore)
-let { fail } = $(statusStore)
+let { difficulty, fail } = $(statusStore)
 
-let timerID: NodeJS.Timer
-let bulletExist = false
-let coolDown = true
+let gameTimer: NodeJS.Timer
+let bulletTimer: NodeJS.Timer
+let bulletExist = $ref(false)
 
 function start() {
-  addEventListener('mousemove', handleMousemove)
-  addEventListener('click', handleClick)
+  if (!difficulty)
+    difficulty = config.difficulty
 
-  statusStore.lockDifficulty()
+  const unwatchClick = watch($$(pressed), onClick)
+  bulletExist = false
+
   statusStore.resetScore()
   fail = false
 
-  bulletExist = false
-  coolDown = true
-
   ball.y = 0
-  ball.x = innerWidth / 2 - ball.diameter
-
+  ball.x = width / 2 - ball.diameter
   let rateX
-    = (difficultyLock / Math.tan((Math.random() * 40 + 30) * (Math.PI / 180))) // 30 ~ 70
+    = (difficulty / Math.tan((Math.random() * 40 + 30) * (Math.PI / 180))) // 30 ~ 70
     * (Math.random() > 0.5 ? 1 : -1)
-  let rateY = difficultyLock
+  let rateY = difficulty
 
-  clearInterval(timerID)
-  timerID = setInterval(() => {
+  clearInterval(gameTimer)
+  gameTimer = setInterval(() => {
     if (bulletExist) {
       bullet.y -= 10
       if (
@@ -49,85 +57,70 @@ function start() {
         && bullet.x <= ball.x + ball.diameter
         && bullet.y + bullet.diameter >= ball.y
         && bullet.y <= ball.y + ball.diameter
-        && coolDown
       ) {
-        coolDown = false
+        clearInterval(bulletTimer)
+        bulletExist = false
         rateY = Math.abs(rateY) * -1
-        statusStore.incrementScore(3)
+        statusStore.incrementScore(1)
       }
     }
 
-    if (ball.x + rateX <= 0)
-      rateX *= -1
-    if (ball.x + rateX >= innerWidth - ball.diameter)
+    if (ball.x + rateX <= 0 || ball.x + rateX >= width - ball.diameter)
       rateX *= -1
     ball.x += rateX
 
     if (ball.y + rateY <= 0)
       rateY *= -1
-    if (ball.y + ball.diameter > innerHeight - board.bottom - board.height) {
-      if (
-        board.x <= ball.x + ball.diameter
-        && board.x + board.width >= ball.x
-      ) {
+    if (ball.y + ball.diameter > height - board.bottom - board.height) {
+      if (board.x <= ball.x + ball.diameter && board.x + board.width >= ball.x) {
         statusStore.incrementScore(1)
         if (rateY > 0) {
           rateY *= -1
           rateX *= 1.0625
         }
       }
-      else if (ball.y + ball.diameter > innerHeight - 10) {
+      else if (ball.y + ball.diameter > height) {
         fail = true
-        stop()
+        unwatchClick()
+        clearInterval(gameTimer)
       }
     }
     ball.y += rateY
   }, 2)
 }
 
-function stop() {
-  removeEventListener('mousemove', handleMousemove)
-  removeEventListener('click', handleClick)
-  clearInterval(timerID)
+function onClick() {
+  if (!bulletExist) {
+    bullet.x = getPosition(mouseX, bullet.diameter)
+    bullet.y = height - board.bottom - board.height - bullet.diameter
+    bulletExist = true
+    if (mouseType === 'touch')
+      bulletTimer = setTimeout(() => bulletExist = false, 1500)
+    else
+      bulletTimer = setTimeout(() => bulletExist = false, 1000)
+  }
 }
+
+watchEffect(() => {
+  ball.diameter = Math.sqrt(width * height) * (config.ball.diameter / 1200)
+  bullet.diameter = Math.sqrt(width * height) * (config.bullet.diameter / 1200)
+  board.width = Math.sqrt(width * height) * (config.board.width / 1200)
+  board.height = Math.sqrt(width * height) * (config.board.height / 1200)
+  board.bottom = Math.sqrt(width * height) * (config.board.bottom / 1200)
+})
+
+watch($$(mouseX), () => {
+  board.x = getPosition(mouseX, board.width)
+  if (mouseType === 'touch')
+    onClick()
+})
 
 function getPosition(target: number, size: number) {
-  if (target + size / 2 > innerWidth)
-    return innerWidth - size
-  else if (target - size / 2 < 0)
+  if (target + size / 2 > width)
+    return width - size
+  if (target - size / 2 < 0)
     return 0
-  else return target - size / 2
-}
-
-function handleMousemove(event: MouseEvent) {
-  const { clientX } = event
-
-  board.x = getPosition(clientX, board.width)
-  if (!bulletExist) {
-    bullet.x = getPosition(clientX, bullet.diameter)
-    bullet.y = innerHeight - board.bottom - board.height - bullet.diameter
-  }
-}
-
-function handleTouchmove(event: TouchEvent) {
-  event.preventDefault()
-  board.x = getPosition(event.changedTouches[0].clientX, board.width)
-  handleClick()
-}
-
-function handleClick(event?: MouseEvent) {
-  if (event)
-    event.preventDefault()
-
-  if (!bulletExist) {
-    bulletExist = true
-    setTimeout(() => {
-      coolDown = true
-      bulletExist = false
-      bullet.x = board.x + board.width / 2 - bullet.diameter / 2
-      bullet.y = innerHeight - board.bottom - board.height - bullet.diameter
-    }, 1000)
-  }
+  return target - size / 2
 }
 </script>
 
@@ -139,7 +132,7 @@ function handleClick(event?: MouseEvent) {
     <div v-show="!fail">
       <Ball :diameter="ball.diameter" :offset-x="ball.x" :offset-y="ball.y" />
       <Board :width="board.width" :height="board.height" :left="board.x" :bottom="board.bottom" />
-      <Bullet :diameter="bullet.diameter" :offset-x="bullet.x" :offset-y="bullet.y" />
+      <Bullet v-show="bulletExist" :diameter="bullet.diameter" :offset-x="bullet.x" :offset-y="bullet.y" />
     </div>
   </div>
 </template>

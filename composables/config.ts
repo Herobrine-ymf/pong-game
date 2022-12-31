@@ -5,7 +5,7 @@ export default {
   board: {
     width: 250,
     height: 20,
-    bottom: 40,
+    bottom: 50,
   },
   bullet: {
     diameter: 20,
