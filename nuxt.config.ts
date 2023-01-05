@@ -18,7 +18,6 @@ export default defineNuxtConfig({
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',
-    '@pinia/nuxt',
     '@nuxtjs/color-mode',
   ],
   runtimeConfig: {
@@ -27,7 +26,6 @@ export default defineNuxtConfig({
   vite: {
     plugins: [AutoImport({
       imports: [
-        'pinia',
         {
           'naive-ui': [
             'useDialog',

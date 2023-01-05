@@ -8,7 +8,7 @@ export default {
     bottom: 50,
   },
   bullet: {
-    diameter: 20,
+    diameter: 25,
   },
 
   difficulty: 5,
