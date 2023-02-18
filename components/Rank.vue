@@ -47,8 +47,7 @@ async function handleClick() {
     <br>
     <n-space justify="center">
       <n-button
-        v-show="Boolean(id)" type="error"
-        @click="() => {
+        v-show="Boolean(id)" type="error" @click="() => {
           name = ''
           id = ''
         }"
@@ -66,8 +65,7 @@ async function handleClick() {
     <br>
 
     <n-data-table
-      :data="ranks.map((item, index) => ({ index: index + 1, ...item }))" :pagination="{}"
-      :columns="[
+      :data="ranks.map((item, index) => ({ index: index + 1, ...item }))" :pagination="{}" :columns="[
         {
           key: 'index',
           align: 'center',

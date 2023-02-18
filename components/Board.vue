@@ -11,8 +11,7 @@ defineProps<{
 
 <template>
   <div
-    class="absolute bg-orange-600 rd-2"
-    :style="{
+    class="absolute bg-orange-600 rd-2" :style="{
       width: `${width}px`,
       height: `${height}px`,
       top: `${top}px`,

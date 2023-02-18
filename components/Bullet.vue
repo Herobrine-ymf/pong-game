@@ -8,8 +8,7 @@ defineProps<{
 
 <template>
   <div
-    class="absolute bg-amber-700 rd-full"
-    :style="{
+    class="absolute bg-amber-700 rd-full" :style="{
       width: `${diameter}px`,
       height: `${diameter}px`,
       left: `${offsetX}px`,

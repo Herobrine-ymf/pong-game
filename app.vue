@@ -164,6 +164,7 @@ html {
   padding: 0;
   user-select: none;
 }
+
 html.dark {
   background: #222;
 }
